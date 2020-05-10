@@ -8,6 +8,7 @@ using Core.Utilities.Security.Hashing;
 using Core.Utilities.Security.Jwt;
 using DataAccess.Abstract;
 using Entity.Dtos;
+using Entity.Dtos.UserDto;
 using TurkishCitizenIdValidator;
 
 namespace Business.Concrete

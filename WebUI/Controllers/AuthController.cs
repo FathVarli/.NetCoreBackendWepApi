@@ -4,9 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Business.Abstract;
 using Core.Entities.Concrete;
+using Core.Utilities.IoC;
 using Entity.Dtos;
+using Entity.Dtos.UserDto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace WebUI.Controllers
 {
@@ -16,10 +19,14 @@ namespace WebUI.Controllers
     public class AuthController : ControllerBase
     {
         private IAuthService _authService;
+        private IForgotPasswordService _passwordService;
+        private IHttpContextAccessor _context;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, IForgotPasswordService passwordService)
         {
             _authService = authService;
+            _passwordService = passwordService;
+            _context = ServiceTool.ServiceProvider.GetService<IHttpContextAccessor>();
         }
 
         [HttpPost("login")]
@@ -107,6 +114,52 @@ namespace WebUI.Controllers
                 return Ok(result.Message);
             }
 
+            return BadRequest(result.Message);
+        }
+
+        [HttpPost("resetpassword")]
+        public ActionResult PasswordReset(ForgotPasswordDto model)
+        {
+            var result = _passwordService.PasswordResetMail(model);
+            if (result.Success)
+            {
+                return Ok(result.Message);
+            }
+
+            return BadRequest(result.Message);
+        }
+
+        [HttpGet("changepassword")]
+        public ActionResult ValidatePassword(int id, string token)
+        {
+            var result = _passwordService.ValidatePasswordResetToken(id, token);
+            string clientUrl = "";
+            var contextPath = _context.HttpContext.Request.Host;
+            bool isDevelopment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
+            if (isDevelopment)
+            {
+                clientUrl = Environment.GetEnvironmentVariable("DEVOLOPMENT_CLIENT_URL");
+            }
+            else
+            {
+                //address of the real environment
+            }
+
+            if (result.Success)
+            {
+                string redirectUrl = string.Format(clientUrl + "/authentication/reset-password/{0}", id);
+                return Redirect(redirectUrl);
+            }
+            return Redirect(clientUrl + "/authentication/login");
+        }
+        [HttpPost("sifreyenileme")]
+        public ActionResult ChangePassword(PasswordResetDto model)
+        {
+            var result = _passwordService.CreateNewPassword(model, model.Id);
+            if (result.Success)
+            {
+                return Ok(result.Message);
+            }
             return BadRequest(result.Message);
         }
 
