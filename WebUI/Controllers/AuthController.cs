@@ -20,13 +20,13 @@ namespace WebUI.Controllers
     {
         private IAuthService _authService;
         private IForgotPasswordService _passwordService;
-        private IHttpContextAccessor _context;
+        private IHttpContextAccessor _httpContext;
 
         public AuthController(IAuthService authService, IForgotPasswordService passwordService)
         {
             _authService = authService;
             _passwordService = passwordService;
-            _context = ServiceTool.ServiceProvider.GetService<IHttpContextAccessor>();
+            _httpContext = ServiceTool.ServiceProvider.GetService<IHttpContextAccessor>();
         }
 
         [HttpPost("login")]
@@ -134,7 +134,7 @@ namespace WebUI.Controllers
         {
             var result = _passwordService.ValidatePasswordResetToken(id, token);
             string clientUrl = "";
-            var contextPath = _context.HttpContext.Request.Host;
+            var contextPath = _httpContext.HttpContext.Request.Host;
             bool isDevelopment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
             if (isDevelopment)
             {

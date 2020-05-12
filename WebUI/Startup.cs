@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Core.DependencyResolvers;
 using Core.Extensions;
 using Core.Utilities.IoC;
@@ -17,12 +18,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 namespace WebUI
 {
     public class Startup
     {
         private readonly IConfiguration _configuration;
+
         public Startup(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -37,7 +40,7 @@ namespace WebUI
             services.AddCors(options =>
                 options.AddPolicy("AllowOrigin",
                     builder => builder.WithOrigins("domain"))
-                );
+            );
 
             var tokenOptions = _configuration.GetSection("TokenOptions").Get<TokenOptions>();
 
@@ -55,11 +58,13 @@ namespace WebUI
                         IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey)
                     };
                 });
-
+            // services.AddAutoMapper(typeof(Startup));
             services.AddDependencyResolvers(new ICoreModule[]
             {
                 new CoreModule(),
             });
+
+            services.AddSwaggerGen(x => { x.SwaggerDoc("v1", new OpenApiInfo { Title = "WebUI", Version = "v1" }); });
         }
 
 
@@ -71,9 +76,16 @@ namespace WebUI
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseHsts();
+            }
 
-            app.UseCors(builder => builder.WithOrigins("domain").AllowAnyHeader());//her talebe cevap ver
-            
+            app.UseSwagger();
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API"); });
+
+            app.UseCors(builder => builder.WithOrigins("domain").AllowAnyHeader()); //her talebe cevap ver
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -82,10 +94,8 @@ namespace WebUI
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
         }
     }
 }

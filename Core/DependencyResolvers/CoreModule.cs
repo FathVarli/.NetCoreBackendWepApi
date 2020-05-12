@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using AutoMapper;
 using Core.CrossCuttingConcerns.Caching;
 using Core.CrossCuttingConcerns.Caching.Microsoft;
 using Core.Utilities.IoC;
@@ -20,6 +21,7 @@ namespace Core.DependencyResolvers
             //services.AddDistributedRedisCache(options => { options.Configuration = "localhost:44321"; });
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<Stopwatch>();
+            
         }
     }
 }

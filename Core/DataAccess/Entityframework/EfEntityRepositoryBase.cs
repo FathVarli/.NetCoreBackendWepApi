@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using Core.DataAccess;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.Concrete.EntityFramework
+namespace Core.DataAccess.Entityframework
 {
     public class EfEntityRepositoryBase<TEntity,TContext> :IEntityRepository<TEntity> 
         where TEntity:class,IEntity,new()

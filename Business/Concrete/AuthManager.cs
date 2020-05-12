@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using AutoMapper;
 using Business.Abstract;
 using Core.Entities.Concrete;
 using Core.Utilities.Results;
