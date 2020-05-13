@@ -19,6 +19,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using WebUI.Installer;
 
 namespace WebUI
 {
@@ -36,11 +37,9 @@ namespace WebUI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            services.AddCors(options =>
-                options.AddPolicy("AllowOrigin",
-                    builder => builder.WithOrigins("domain"))
-            );
+            // services.AddAutoMapper(typeof(Startup));
+          
+            services.InstallServicesInAssembly(Configuration);
 
             var tokenOptions = _configuration.GetSection("TokenOptions").Get<TokenOptions>();
 
@@ -58,13 +57,7 @@ namespace WebUI
                         IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey)
                     };
                 });
-            // services.AddAutoMapper(typeof(Startup));
-            services.AddDependencyResolvers(new ICoreModule[]
-            {
-                new CoreModule(),
-            });
 
-            services.AddSwaggerGen(x => { x.SwaggerDoc("v1", new OpenApiInfo { Title = "WebUI", Version = "v1" }); });
         }
 
 
@@ -81,8 +74,13 @@ namespace WebUI
                 app.UseHsts();
             }
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API"); });
+            var swaggerOptions = new SwaggerOptions.SwaggerOptions();
+
+            _configuration.GetSection("SwaggerOptions").Bind(swaggerOptions);
+
+            app.UseSwagger(option => { option.RouteTemplate = swaggerOptions.JsonRoute; });
+
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint(swaggerOptions.UiEndpoint, swaggerOptions.Description);});
 
             app.UseCors(builder => builder.WithOrigins("domain").AllowAnyHeader()); //her talebe cevap ver
 
