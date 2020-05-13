@@ -13,4 +13,4 @@
 | tools  |tech |
 | ------------- | -------------- |
 | backend  | Visual Studio 2019  |
-| Api Development  | Postman |
+| Api Development  | swagger |
