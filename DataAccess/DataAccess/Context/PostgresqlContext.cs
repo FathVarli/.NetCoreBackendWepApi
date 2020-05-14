@@ -1,16 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Core.Entities.Concrete;
+﻿using Core.Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.Concrete.EntityFramework.Context
+namespace DataAccess.DataAccess.Context
 {
     public class PostgresqlContext : DbContext
     {
+        public PostgresqlContext(DbContextOptions<PostgresqlContext> options) : base(options)
+        {
+
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql(@"");
+           // optionsBuilder.UseNpgsql(@"Server = localhost ; Port = 5432; Database = Core_Backend; User Id = postgres; Password = admin;");
+            optionsBuilder.EnableSensitiveDataLogging(sensitiveDataLoggingEnabled: true);
+
         }
 
         public DbSet<User> Users { get; set; }

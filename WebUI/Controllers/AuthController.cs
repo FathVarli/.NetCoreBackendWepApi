@@ -20,13 +20,11 @@ namespace WebUI.Controllers
     {
         private IAuthService _authService;
         private IForgotPasswordService _passwordService;
-        private IHttpContextAccessor _httpContext;
 
         public AuthController(IAuthService authService, IForgotPasswordService passwordService)
         {
             _authService = authService;
             _passwordService = passwordService;
-            _httpContext = ServiceTool.ServiceProvider.GetService<IHttpContextAccessor>();
         }
 
         [HttpPost("login")]
@@ -134,7 +132,7 @@ namespace WebUI.Controllers
         {
             var result = _passwordService.ValidatePasswordResetToken(id, token);
             string clientUrl = "";
-            var contextPath = _httpContext.HttpContext.Request.Host;
+            var contextPath = HttpContext.Request.Host;
             bool isDevelopment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
             if (isDevelopment)
             {
@@ -152,7 +150,7 @@ namespace WebUI.Controllers
             }
             return Redirect(clientUrl + "/authentication/login");
         }
-        [HttpPost("sifreyenileme")]
+        [HttpPost("changepasswordpage")]
         public ActionResult ChangePassword(PasswordResetDto model)
         {
             var result = _passwordService.CreateNewPassword(model, model.Id);
