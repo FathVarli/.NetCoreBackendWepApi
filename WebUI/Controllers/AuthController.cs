@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Business.Abstract;
 using Core.Entities.Concrete;
+using Core.Extensions;
 using Core.Utilities.IoC;
 using Entity.Dtos;
 using Entity.Dtos.UserDto;
@@ -51,6 +52,24 @@ namespace WebUI.Controllers
                 return BadRequest(e.Message);
             }
         }
+        [HttpPost("refresh")]
+        public ActionResult RefreshToken(RefreshTokenDto refreshTokenDto)
+        {
+            try
+            {
+                var userToLogin = _authService.RefreshToken(refreshTokenDto.Token, refreshTokenDto.RefreshToken);
+                if (!userToLogin.Success)
+                {
+                    return BadRequest(userToLogin.Message);
+                }
+
+                return Ok(userToLogin.Data);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
         [HttpPost("register")]
         public ActionResult Register(UserRegisterDto registerModel)
@@ -76,7 +95,7 @@ namespace WebUI.Controllers
                 return BadRequest(e.Message);
             }
         }
-       
+
         [HttpPost("{id}")]
         public ActionResult UserUpdate(int id, UserUpdateDto updateModel)
         {
@@ -102,7 +121,7 @@ namespace WebUI.Controllers
                 return BadRequest(e.Message);
             }
         }
-       
+
         [HttpPost("delete")]
         public IActionResult Delete(User user)
         {

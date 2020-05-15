@@ -23,7 +23,7 @@ namespace Core.Utilities.Security.Jwt
         {
             Configuration = configuration;
             _tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
-            _accessTokenExpiration = DateTime.Now.AddMinutes(_tokenOptions.AccessTokenExpiration);
+            _accessTokenExpiration = DateTime.Now.Add(_tokenOptions.TokenLifeTime);
         }
 
 
@@ -31,14 +31,29 @@ namespace Core.Utilities.Security.Jwt
         {
             var securityKey = SecurityKeyHelper.CreateSecurityKey(_tokenOptions.SecurityKey);
             var signingCredentials = SigningCredentialsHelper.CreateSigningCredentials(securityKey);
-            var jwt = CreateJwtSecurityToken(_tokenOptions, user, signingCredentials, operationClaims);
             var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-            var token = jwtSecurityTokenHandler.WriteToken(jwt);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(SetClaims(user,operationClaims)),
+                Expires = DateTime.UtcNow.Add(_tokenOptions.TokenLifeTime),
+                SigningCredentials = signingCredentials,
+                Audience = _tokenOptions.Audience,
+                Issuer = _tokenOptions.Issuer,
+            };
+            var token = jwtSecurityTokenHandler.CreateToken(tokenDescriptor);
 
+            var refreshToken = new RefreshToken
+            {
+                JwtId = token.Id,
+                UserId = user.Id,
+                CreationDate = DateTime.UtcNow,
+                ExpiryDate = DateTime.UtcNow.AddMonths(6)
+            };
             return new AccessToken
             {
-                Token = token,
-                ExpirationTime = _accessTokenExpiration
+                Token = jwtSecurityTokenHandler.WriteToken(token),
+                ExpirationTime = _accessTokenExpiration,
+                RefreshToken = refreshToken.Token
             };
 
         }

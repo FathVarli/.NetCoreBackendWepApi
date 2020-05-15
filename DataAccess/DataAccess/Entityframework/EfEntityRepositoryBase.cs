@@ -40,15 +40,15 @@ namespace DataAccess.DataAccess.Entityframework
         }
         public TEntity Get(Expression<Func<TEntity, bool>> filter)
         {
-            return _context.Set<TEntity>().SingleOrDefault(filter);
+            return _context.Set<TEntity>().AsNoTracking().SingleOrDefault(filter);
         }
 
         public IList<TEntity> GetList(Expression<Func<TEntity, bool>> filter = null)
         {
 
             return filter == null
-                ? _context.Set<TEntity>().ToList()
-                : _context.Set<TEntity>().Where(filter).ToList();
+                ? _context.Set<TEntity>().AsNoTracking().ToList()
+                : _context.Set<TEntity>().AsNoTracking().Where(filter).ToList();
 
         }
 

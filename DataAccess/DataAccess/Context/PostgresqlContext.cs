@@ -20,5 +20,6 @@ namespace DataAccess.DataAccess.Context
         public DbSet<OperationClaim> OperationClaims { get; set; }
         public DbSet<UserOperationClaim> UserOperationClaims { get; set; }
         public DbSet<ResetPassword> ResetPasswords { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
     }
 }

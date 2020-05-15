@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Core.Entities;
 
-namespace Core.Utilities.Security.Jwt
+namespace Entity.Dtos.UserDto
 {
-    public class AccessToken
+    public class RefreshTokenDto:IDto
     {
         public string Token { get; set; }
-        public DateTime ExpirationTime { get; set; }
-
         public string RefreshToken { get; set; }
     }
 }
