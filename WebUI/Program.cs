@@ -20,10 +20,19 @@ namespace WebUI
         public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
+            bool isDevelopment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
             using (var serviceScope = host.Services.CreateScope())
             {
                 var dbContext = serviceScope.ServiceProvider.GetRequiredService<PostgresqlContext>();
                 await dbContext.Database.MigrateAsync();
+
+                if (isDevelopment)
+                {
+                    dbContext.Database.EnsureDeleted();
+
+                }
+                dbContext.Database.EnsureCreated();
+                DbInitializer.Initialize(dbContext);
             }
 
             await host.RunAsync();
