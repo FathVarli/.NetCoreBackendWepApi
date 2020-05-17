@@ -24,15 +24,15 @@ namespace WebUI
             using (var serviceScope = host.Services.CreateScope())
             {
                 var dbContext = serviceScope.ServiceProvider.GetRequiredService<PostgresqlContext>();
-                await dbContext.Database.MigrateAsync();
 
                 if (isDevelopment)
                 {
                     dbContext.Database.EnsureDeleted();
+                    dbContext.Database.EnsureCreated();
+                    DbInitializer.Initialize(dbContext);
 
                 }
-                dbContext.Database.EnsureCreated();
-                DbInitializer.Initialize(dbContext);
+                
             }
 
             await host.RunAsync();

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Business.Abstract;
+using Core.Aspects.Autofac.Caching;
 using Core.Entities.Concrete;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
@@ -17,6 +19,10 @@ namespace Business.Concrete
         public UserManager(IUserDal userDal)
         {
             _userDal = userDal;
+        }
+        public List<User> GetUsers()
+        {
+            return _userDal.GetList().ToList();
         }
 
         public List<OperationClaim> GetClaim(User user)
@@ -34,7 +40,7 @@ namespace Business.Concrete
         {
           return  _userDal.Get(u => u.Email == email);
         }
-
+        
         public User GetById(int id)
         {
             return _userDal.Get(u => u.Id == id);

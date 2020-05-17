@@ -11,6 +11,7 @@ using Entity.Dtos.UserDto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using WebUI.RedisCache;
 
 namespace WebUI.Controllers
 {
@@ -21,11 +22,13 @@ namespace WebUI.Controllers
     {
         private IAuthService _authService;
         private IForgotPasswordService _passwordService;
+        private IUserService _userService;
 
-        public AuthController(IAuthService authService, IForgotPasswordService passwordService)
+        public AuthController(IAuthService authService, IForgotPasswordService passwordService, IUserService userService)
         {
             _authService = authService;
             _passwordService = passwordService;
+            _userService = userService;
         }
 
         [HttpPost("login")]
@@ -178,6 +181,13 @@ namespace WebUI.Controllers
                 return Ok(result.Message);
             }
             return BadRequest(result.Message);
+        }
+        [HttpGet("getalluser")]
+        public ActionResult GetAllUser()
+        {
+            var result = _userService.GetUsers();
+
+            return Ok(result);
         }
 
     }

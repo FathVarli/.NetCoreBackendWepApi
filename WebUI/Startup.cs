@@ -22,6 +22,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using WebUI.Installer;
+using WebUI.RedisCache;
 
 namespace WebUI
 {
@@ -67,6 +68,19 @@ namespace WebUI
                         IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey)
                     };
                 });
+
+            var redisCacheSettings = new RedisCacheSettings();
+            _configuration.GetSection("RedisCacheSettings").Bind(redisCacheSettings);
+            services.AddSingleton(redisCacheSettings);
+
+            if (!redisCacheSettings.Enabled)
+            {
+                return;
+            }
+
+            services.AddStackExchangeRedisCache(options =>
+                options.Configuration = redisCacheSettings.ConnectionString);
+            services.AddSingleton<IRedisCacheService, RedisApiCache>();
 
         }
 
