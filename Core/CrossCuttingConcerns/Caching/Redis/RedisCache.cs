@@ -7,35 +7,21 @@ using ServiceStack.Redis;
 
 namespace Core.CrossCuttingConcerns.Caching.Redis
 {
-    public class RedisCache : ICacheManager
+    public class RedisCacheManager : ICacheManager
     {
         private readonly RedisEndpoint _redisEndpoint;
 
         private void RedisInvoker(Action<RedisClient> redisAction)
         {
-            if (_redisEndpoint == null)
-            {
-                throw new NullReferenceException();
-            }
-
             using (var client = new RedisClient(_redisEndpoint))
             {
                 redisAction.Invoke(client);
             }
         }
 
-        public RedisCache()
+        public RedisCacheManager()
         {
-            var configuration = (IConfiguration)ServiceTool.ServiceProvider.GetService(typeof(IConfiguration));
-
-            var redisConnectionInfo = configuration.GetValue<string>("RedisHostInformation").Split(':');
-
-            if (redisConnectionInfo.Length != 2 || int.TryParse(redisConnectionInfo[1], out var port) == false || port == 0)
-            {
-                throw new NullReferenceException();
-            }
-
-            _redisEndpoint = new RedisEndpoint(redisConnectionInfo[0], port);
+            _redisEndpoint = new RedisEndpoint("localhost",6379);
         }
 
         public T Get<T>(string key)
@@ -80,3 +66,4 @@ namespace Core.CrossCuttingConcerns.Caching.Redis
         }
     }
 }
+

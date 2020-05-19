@@ -13,6 +13,8 @@ using Core.Utilities.Security.Jwt;
 using DataAccess.Abstract;
 using Entity.Dtos;
 using Entity.Dtos.UserDto;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.IdentityModel.Tokens;
 using TurkishCitizenIdValidator;
 
@@ -31,7 +33,6 @@ namespace Business.Concrete
             _tokenHelper = tokenHelper;
             _userDal = userDal;
             _refreshTokenDal = refreshTokenDal;
-
         }
         public IDataResult<User> Login(UserLoginDto userLoginDto)
         {

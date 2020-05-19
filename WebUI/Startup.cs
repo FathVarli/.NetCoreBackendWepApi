@@ -44,6 +44,7 @@ namespace WebUI
             services.AddDbContext<PostgresqlContext>(options =>
                 options.UseNpgsql(
                     _configuration.GetConnectionString("DefaultConnection"),x=>x.MigrationsAssembly("WebUI")));
+
             services.InstallServicesInAssembly(Configuration);
 
             var tokenOptions = _configuration.GetSection("TokenOptions").Get<TokenOptions>();
