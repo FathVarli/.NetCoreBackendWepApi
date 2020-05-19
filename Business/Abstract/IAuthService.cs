@@ -18,7 +18,6 @@ namespace Business.Abstract
         IDataResult<User> UserUpdate(User userToCheck, UserUpdateDto userUpdateDto, string password = null);
         IResult Delete(User user);
         User UserExistsId(int id);
-        IDataResult<AccessToken> RefreshToken(string token, string refreshToken);
     }
 }
  

@@ -55,25 +55,7 @@ namespace WebUI.Controllers
                 return BadRequest(e.Message);
             }
         }
-        [HttpPost("refresh")]
-        public ActionResult RefreshToken(RefreshTokenDto refreshTokenDto)
-        {
-            try
-            {
-                var userToLogin = _authService.RefreshToken(refreshTokenDto.Token, refreshTokenDto.RefreshToken);
-                if (!userToLogin.Success)
-                {
-                    return BadRequest(userToLogin.Message);
-                }
-
-                return Ok(userToLogin.Data);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
+       
         [HttpPost("register")]
         public ActionResult Register(UserRegisterDto registerModel)
         {

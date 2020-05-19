@@ -5,11 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20200513191509_addedEntity.cs" />
-    <Compile Remove="Migrations\20200513191509_addedEntity.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Remove="log4net.config" />
   </ItemGroup>
 

@@ -17,8 +17,6 @@ namespace Core.DependencyResolvers
         public void Load(IServiceCollection services)
         {
             services.AddMemoryCache();
-            //services.AddStackExchangeRedisCache(options=> options.Configuration="localhost");
-            //services.AddDistributedRedisCache(options => { options.Configuration = "localhost:6379"; });
             services.AddSingleton<ICacheManager, RedisCacheManager>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<Stopwatch>();
