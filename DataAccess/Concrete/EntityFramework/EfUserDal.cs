@@ -9,16 +9,13 @@ using PostgresqlContext = DataAccess.DataAccess.Context.PostgresqlContext;
 
 namespace DataAccess.Concrete.EntityFramework
 {
-   public class EfUserDal: EfEntityRepositoryBase<User>,IUserDal
+   public class EfUserDal: EfEntityRepositoryBase<User,PostgresqlContext>,IUserDal
     {
-        private readonly PostgresqlContext context;
-
-        public EfUserDal(PostgresqlContext dataContext) : base(dataContext)
-        {
-            context = dataContext;
-        }
+        
         public List<OperationClaim> GetClaims(User user)
         {
+            using var context = new PostgresqlContext();
+         
             var result = from operationClaim in context.OperationClaims
                     join userOperationClaim in context.UserOperationClaims
                         on operationClaim.Id equals userOperationClaim.OperationClaimId

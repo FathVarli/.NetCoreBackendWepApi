@@ -41,9 +41,9 @@ namespace WebUI
         public void ConfigureServices(IServiceCollection services)
         {
             // services.AddAutoMapper(typeof(Startup));
-            services.AddDbContext<PostgresqlContext>(options =>
-                options.UseNpgsql(
-                    _configuration.GetConnectionString("DefaultConnection"),x=>x.MigrationsAssembly("WebUI")));
+            //services.AddDbContext<PostgresqlContext>(options =>
+            //    options.UseNpgsql(
+            //        _configuration.GetConnectionString("DefaultConnection"),x=>x.MigrationsAssembly("WebUI")));
 
             services.InstallServicesInAssembly(Configuration);
 

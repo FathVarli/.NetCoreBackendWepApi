@@ -4,63 +4,60 @@ using System.Linq;
 using System.Linq.Expressions;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
-using PostgresqlContext = DataAccess.DataAccess.Context.PostgresqlContext;
 
 namespace DataAccess.DataAccess.Entityframework
 {
-    public class EfEntityRepositoryBase<TEntity> :IEntityRepository<TEntity> 
-        where TEntity:class,IEntity,new()
+    public class EfEntityRepositoryBase<TEntity, TContext> : IEntityRepository<TEntity>
+        where TEntity : class, IEntity, new()
+        where TContext : DbContext, new()
     {
-
-
-        protected PostgresqlContext  _context { get; set; }
-
-        public EfEntityRepositoryBase(PostgresqlContext context)
-        {
-            this._context = context;
-        }
-
-
         public void Add(TEntity entity)
         {
-
-            var addedEntity = _context.Entry(entity);
-            addedEntity.State = EntityState.Added;
-            _context.SaveChanges();
-
+            using (var context = new TContext())
+            {
+                var addedEntity = context.Entry(entity);
+                addedEntity.State = EntityState.Added;
+                context.SaveChanges();
+            }
         }
 
         public void Delete(TEntity entity)
         {
-
-            var deletedEntity = _context.Entry(entity);
-            deletedEntity.State = EntityState.Deleted;
-            _context.SaveChanges();
-
+            using (var context = new TContext())
+            {
+                var deletedEntity = context.Entry(entity);
+                deletedEntity.State = EntityState.Deleted;
+                context.SaveChanges();
+            }
         }
+
         public TEntity Get(Expression<Func<TEntity, bool>> filter)
         {
-            return _context.Set<TEntity>().AsNoTracking().SingleOrDefault(filter);
+            using (var context = new TContext())
+            {
+                return context.Set<TEntity>().SingleOrDefault(filter);
+            }
         }
 
         public IList<TEntity> GetList(Expression<Func<TEntity, bool>> filter = null)
         {
-
-            return filter == null
-                ? _context.Set<TEntity>().AsNoTracking().ToList()
-                : _context.Set<TEntity>().AsNoTracking().Where(filter).ToList();
-
+            using (var context = new TContext())
+            {
+                return filter == null
+                    ? context.Set<TEntity>().ToList()
+                    : context.Set<TEntity>().Where(filter).ToList();
+            }
         }
 
         public void Update(TEntity entity)
         {
-
-            var updatedEntity = _context.Entry(entity);
-            updatedEntity.State = EntityState.Modified;
-            _context.SaveChanges();
-
+            using (var context = new TContext())
+            {
+                var updatedEntity = context.Entry(entity);
+                updatedEntity.State = EntityState.Modified;
+                context.SaveChanges();
+            }
         }
-
-
     }
 }
+

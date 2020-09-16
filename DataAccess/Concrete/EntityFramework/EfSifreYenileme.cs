@@ -5,10 +5,8 @@ using PostgresqlContext = DataAccess.DataAccess.Context.PostgresqlContext;
 
 namespace DataAccess.Concrete.EntityFramework
 {
-    public class EfPasswordResetDal : EfEntityRepositoryBase<ResetPassword>, IPasswordResetDal
+    public class EfPasswordResetDal : EfEntityRepositoryBase<ResetPassword,PostgresqlContext>, IPasswordResetDal
     {
-        public EfPasswordResetDal(PostgresqlContext context) : base(context)
-        {
-        }
+       
     }
 }

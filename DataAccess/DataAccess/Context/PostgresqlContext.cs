@@ -5,13 +5,10 @@ namespace DataAccess.DataAccess.Context
 {
     public class PostgresqlContext : DbContext
     {
-        public PostgresqlContext(DbContextOptions<PostgresqlContext> options) : base(options)
-        {
-
-        }
+    
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-           // optionsBuilder.UseNpgsql(@"Server = localhost ; Port = 5432; Database = Core_Backend; User Id = postgres; Password = admin;");
+           optionsBuilder.UseNpgsql(@"yourdbstring");
             optionsBuilder.EnableSensitiveDataLogging(sensitiveDataLoggingEnabled: true);
 
         }
