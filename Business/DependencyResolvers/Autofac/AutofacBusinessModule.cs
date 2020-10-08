@@ -21,6 +21,7 @@ namespace Business.DependencyResolvers.Autofac
         {
             builder.RegisterType<EfUserDal>().As<IUserDal>();
             builder.RegisterType<EfPasswordResetDal>().As<IPasswordResetDal>();
+            builder.RegisterType<EfUserOperationDal>().As<IUserOperationClaimDal>();
 
 
             builder.RegisterType<UserManager>().As<IUserService>();
